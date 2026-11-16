@@ -38,6 +38,16 @@ def first(page_or_loc, selectors: list[str]):
     return None
 
 
+def wait_first(page, selectors: list[str], timeout_ms: int = 8000):
+    """Like first(), but gives content that loads after the page (such as the job description) time to appear."""
+    deadline = time.monotonic() + timeout_ms / 1000
+    while True:
+        loc = first(page, selectors)
+        if loc is not None or time.monotonic() >= deadline:
+            return loc
+        page.wait_for_timeout(500)
+
+
 def text_of(page_or_loc, selectors: list[str]) -> str:
     loc = first(page_or_loc, selectors)
     if loc is None:

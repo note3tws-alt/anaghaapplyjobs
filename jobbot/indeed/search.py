@@ -7,7 +7,7 @@ import re
 from urllib.parse import parse_qs, urlencode, urljoin, urlparse
 
 from jobbot.indeed import selectors as S
-from jobbot.indeed.browser import BrowserSession, first, text_of
+from jobbot.indeed.browser import BrowserSession, first, text_of, wait_first
 from jobbot.sanitize import clean_field, clean_text
 
 log = logging.getLogger("jobbot.search")
@@ -79,8 +79,10 @@ def search(session: BrowserSession, query: str, location: str, days: int, pages:
 
 def read_job(session: BrowserSession, url: str) -> dict:
     page = session.goto(url)
-    desc_loc = first(page, S.JOB_DESCRIPTION)
+    desc_loc = wait_first(page, S.JOB_DESCRIPTION)
     description = clean_text(desc_loc.inner_html()) if desc_loc is not None else ""
+    if not description:
+        log.warning("no job description found on %s (page title: %r)", url, page.title())
     if first(page, S.INDEED_APPLY_BUTTON) is not None:
         apply_type = "indeed_apply"
     elif first(page, S.EXTERNAL_APPLY) is not None:

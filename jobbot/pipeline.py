@@ -86,6 +86,8 @@ def evaluate_job(db: DB, job_id: int, settings: dict, profile: dict, stats: RunS
                strict_locations=settings.get("only_apply_in_search_locations", True),
                minimum_salary_aed=int(settings.get("minimum_salary_aed") or 0))
     flags = list(req.flags)
+    if not (job.get("description") or "").strip():
+        flags.append("Job description could not be read; score uses the title only, so open the listing before approving")
     inj = injection_flags(job.get("description") or "")
     if inj or removed:
         flags.append("Listing contains text aimed at automated tools; it was ignored and this job is never auto-submitted")

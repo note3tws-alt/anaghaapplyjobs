@@ -348,7 +348,7 @@ def cmd_doctor(a) -> int:
     print("  telegram approvals:", "configured" if telegram_bot.configured() else "off (python -m jobbot telegram-setup)")
     if a.live:
         from jobbot.indeed import selectors as S
-        from jobbot.indeed.browser import BrowserSession, PauseRequired, first, is_signed_in
+        from jobbot.indeed.browser import BrowserSession, PauseRequired, is_signed_in, wait_first
         from jobbot.indeed.search import parse_results, search_url
         with BrowserSession(load_settings(), headless=False) as b:
             try:
@@ -359,7 +359,8 @@ def cmd_doctor(a) -> int:
                 print(f"  search page: {len(cards)} cards parsed;", "first:", cards[0] if cards else None)
                 if cards:
                     b.goto(cards[0]["url"])
-                    print("  description found:", first(b.page, S.JOB_DESCRIPTION) is not None)
+                    print("  description found:", wait_first(b.page, S.JOB_DESCRIPTION) is not None,
+                          "| page title:", b.page.title())
             except PauseRequired as e:
                 print("  paused:", e); ok = False
     print("doctor:", "all good" if ok else "problems found")

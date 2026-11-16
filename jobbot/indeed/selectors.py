@@ -14,7 +14,9 @@ JOB_TITLE = ["[data-testid='jobsearch-JobInfoHeader-title']", "h1.jobsearch-JobI
 JOB_COMPANY = ["[data-testid='inlineHeader-companyName']", "[data-company-name='true']", ".jobsearch-CompanyInfoContainer a"]
 JOB_LOCATION = ["[data-testid='inlineHeader-companyLocation']", "[data-testid='job-location']", "#jobLocationText"]
 JOB_SALARY = ["#salaryInfoAndJobType", "[data-testid='jobsearch-OtherJobDetailsContainer']"]
-JOB_DESCRIPTION = ["#jobDescriptionText", "[data-testid='jobsearch-JobComponent-description']"]
+JOB_DESCRIPTION = ["#jobDescriptionText", "[data-testid='jobsearch-JobComponent-description']",
+                   "[data-testid*='jobDescription']", "[id^='jobDescription']", ".jobsearch-jobDescriptionText",
+                   ".jobsearch-JobComponent-description"]
 INDEED_APPLY_BUTTON = ["#indeedApplyButton", "button[id*='indeedApplyButton']", "[data-testid='indeedApplyButton-test']",
                        "button:has-text('Apply now')"]
 EXTERNAL_APPLY = ["#applyButtonLinkContainer a", "button[aria-label*='company site']", "a:has-text('Apply on company site')",
