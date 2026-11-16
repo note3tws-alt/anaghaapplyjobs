@@ -1,0 +1,62 @@
+# Jobbot settings. Copied to config/settings.yaml by `python -m jobbot init`.
+# The dashboard Settings page edits config/settings.yaml.
+
+application_mode: review        # review = prepare and fill, never submit. auto = submit only after `authorise`.
+match_threshold: 65             # apply/prepare only at or above this score (Good match and up)
+review_threshold: 50            # 50-64 "Possible match": kept for her review, never auto-applied
+daily_application_limit: 8      # target 5-10 when enough relevant vacancies exist
+minimum_salary_aed: 0           # 0 = no minimum. Jobs with no salary shown are never rejected for salary.
+max_searches_per_run: 24        # each title x location pair is one search
+max_result_pages_per_search: 1
+max_job_pages_per_run: 60       # cap on vacancy pages opened per night
+posted_within_days: 7
+seconds_between_page_loads: 6   # polite pacing for Indeed
+
+schedule:
+  timezone: Asia/Dubai
+  days: [Mon, Tue, Wed, Thu, Fri, Sat]
+  time: "09:00"                 # 9:00 AM UAE time (requested 2026-11-16)
+
+# Only Dubai jobs (requested 2026-11-16). Add Sharjah, Ajman or Abu Dhabi here to widen the search.
+locations:
+  - Dubai
+only_apply_in_search_locations: true   # a vacancy whose location is outside the list above is rejected
+
+# Searched in this order. Medical Coding comes first because it is the priority.
+job_titles:
+  medical_coding:
+    - Medical Coder
+    - Junior Medical Coder
+    - CPC Certified Medical Coder
+    - Medical Coding Executive
+    - Medical Coding Specialist
+    - Medical Coding Assistant
+    - Medical Coding Trainee
+    - Outpatient Medical Coder
+    - Medical Coding Associate
+  medical_insurance:
+    - Insurance Coordinator
+    - Medical Insurance Coordinator
+    - Pre-Authorization Officer
+    - Insurance Approval Coordinator
+    - Medical Claims Officer
+    - Claims Processing Executive
+  billing_rcm:
+    - Medical Billing Executive
+    - Medical Billing Specialist
+    - Revenue Cycle Management Executive
+    - RCM Executive
+    - Healthcare Claims Executive
+    - Medical Billing and Coding Executive
+
+browser:
+  channel: chrome               # uses installed Google Chrome; "msedge" also works
+  headless: false               # visible window: easier to trust, and Indeed blocks most headless browsers
+  profile_dir: data/browser-profile
+  base_url: https://ae.indeed.com
+
+authorisation:                  # filled in only by `python -m jobbot authorise`
+  authorised: false
+  authorised_by: null
+  authorised_at: null
+  rules_fingerprint: null
