@@ -53,8 +53,13 @@ if ($useChromium) {
 }
 
 # 5. Private data stays private: only this Windows user can read data\, config\ and .env
-foreach ($p in @("data", ".env", "config\candidate_private.yaml", "config\screening_answers.yaml", "config\settings.yaml")) {
-    if (Test-Path $p) { icacls $p /inheritance:r /grant:r "$($env:USERNAME):(OI)(CI)F" /T /Q | Out-Null }
+# Folder: inheritable grant, contents inherit from it. Files: plain grant (OI/CI flags only apply to folders).
+if (Test-Path "data") {
+    icacls "data" /inheritance:r /grant:r "$($env:USERNAME):(OI)(CI)F" /Q | Out-Null
+    icacls "data\*" /reset /T /Q | Out-Null
+}
+foreach ($p in @(".env", "config\candidate_private.yaml", "config\screening_answers.yaml", "config\settings.yaml")) {
+    if (Test-Path $p) { icacls $p /inheritance:r /grant:r "$($env:USERNAME):F" /Q | Out-Null }
 }
 
 # 6. Desktop shortcuts
