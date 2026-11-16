@@ -52,6 +52,18 @@ ROLE_WORDS = {
 }
 
 
+PHOTO_NAMES = ("photo.jpg", "photo.jpeg", "photo.png")
+
+
+def find_photo() -> Path | None:
+    """Her photo, if one was added with `python -m jobbot init --photo <file>` (kept in data/cv, gitignored)."""
+    for n in PHOTO_NAMES:
+        f = paths().cv_dir / n
+        if f.exists():
+            return f
+    return None
+
+
 def _slug(s: str, n: int = 40) -> str:
     return re.sub(r"[^A-Za-z0-9]+", "-", s or "").strip("-")[:n] or "job"
 
@@ -154,15 +166,31 @@ def write_cv_docx(profile: dict, content: dict, out: Path) -> None:
     st.font.size = Pt(10)
     for s in doc.sections:
         s.left_margin = s.right_margin = s.top_margin = s.bottom_margin = Pt(42)
-    h = doc.add_paragraph()
-    h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = h.add_run(profile["name"].upper())
-    r.bold = True
-    r.font.size = Pt(18)
-    sub = doc.add_paragraph(content["headline"])
-    sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    cl = doc.add_paragraph(_contact_line(profile))
-    cl.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    photo = find_photo()
+    if photo:
+        from docx.shared import Mm
+        t = doc.add_table(rows=1, cols=2)
+        left, right = t.rows[0].cells
+        left.width, right.width = Mm(140), Mm(32)
+        hp = left.paragraphs[0]
+        r = hp.add_run(profile["name"].upper())
+        r.bold = True
+        r.font.size = Pt(18)
+        left.add_paragraph(content["headline"])
+        left.add_paragraph(_contact_line(profile))
+        rp = right.paragraphs[0]
+        rp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        rp.add_run().add_picture(str(photo), width=Mm(28))
+    else:
+        h = doc.add_paragraph()
+        h.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        r = h.add_run(profile["name"].upper())
+        r.bold = True
+        r.font.size = Pt(18)
+        sub = doc.add_paragraph(content["headline"])
+        sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        cl = doc.add_paragraph(_contact_line(profile))
+        cl.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
     _docx_heading(doc, "Professional Summary")
     doc.add_paragraph(content["summary"])
@@ -232,7 +260,7 @@ def _styles():
         "name": ParagraphStyle("name", parent=ss["Title"], fontSize=18, leading=22, spaceAfter=2),
         "sub": ParagraphStyle("sub", parent=ss["Normal"], fontSize=9.5, alignment=TA_CENTER, leading=12),
         "h": ParagraphStyle("h", parent=ss["Heading4"], fontSize=10.5, textColor=colors.HexColor("#1F3A5F"),
-                            spaceBefore=7, spaceAfter=2),
+                            spaceBefore=5, spaceAfter=1.5),
         "body": ParagraphStyle("body", parent=ss["Normal"], fontSize=9.4, leading=12.2),
         "bold": ParagraphStyle("bold", parent=ss["Normal"], fontSize=9.4, leading=12.2, fontName="Helvetica-Bold"),
         "letter": ParagraphStyle("letter", parent=ss["Normal"], fontSize=10.5, leading=14.5, spaceAfter=8),
@@ -247,12 +275,27 @@ def _bullets(items: list[str], st) -> ListFlowable:
 def write_cv_pdf(profile: dict, content: dict, out: Path) -> None:
     S = _styles()
     doc = SimpleDocTemplate(str(out), pagesize=A4, leftMargin=15 * mm, rightMargin=15 * mm,
-                            topMargin=12 * mm, bottomMargin=12 * mm, title=f"{profile['name']} CV",
+                            topMargin=10 * mm, bottomMargin=9 * mm, title=f"{profile['name']} CV",
                             author=profile["name"])
-    f = [Paragraph(escape(profile["name"].upper()), S["name"]),
-         Paragraph(escape(content["headline"]), S["sub"]),
-         Paragraph(escape(_contact_line(profile)), S["sub"]),
-         Paragraph("Professional Summary", S["h"]), Paragraph(escape(content["summary"]), S["body"]),
+    photo = find_photo()
+    if photo:
+        from reportlab.lib.styles import ParagraphStyle as PS
+        from reportlab.platypus import Image, Table, TableStyle
+        img = Image(str(photo))
+        ratio = img.imageHeight / float(img.imageWidth or 1)
+        img.drawWidth, img.drawHeight = 22 * mm, min(28 * mm, 22 * mm * ratio)
+        left = [Paragraph(escape(profile["name"].upper()), PS("nl", parent=S["name"], alignment=0, spaceBefore=0)),
+                Paragraph(escape(content["headline"]), PS("sl", parent=S["sub"], alignment=0, fontSize=9)),
+                Paragraph(escape(_contact_line(profile)), PS("cl", parent=S["sub"], alignment=0, fontSize=9))]
+        head = Table([[left, img]], colWidths=[156 * mm, 24 * mm])
+        head.setStyle(TableStyle([("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("ALIGN", (1, 0), (1, 0), "RIGHT"),
+                                  ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)]))
+        f = [head]
+    else:
+        f = [Paragraph(escape(profile["name"].upper()), S["name"]),
+             Paragraph(escape(content["headline"]), S["sub"]),
+             Paragraph(escape(_contact_line(profile)), S["sub"])]
+    f += [Paragraph("Professional Summary", S["h"]), Paragraph(escape(content["summary"]), S["body"]),
          Paragraph("Certification", S["h"])]
     aapc = profile.get("contact", {}).get("aapc_id")
     f.append(_bullets([f"{c['name']} | {c['date']} | {c['detail']}" + (f" | AAPC ID: {aapc}" if aapc else "")

@@ -22,7 +22,8 @@ powershell -ExecutionPolicy Bypass -File scripts\windows\install.ps1 -CvPath "C:
 
 This creates `.venv`, installs packages, creates `config\settings.yaml`, `config\screening_answers.yaml`,
 `config\candidate_private.yaml` and `.env` from the examples, reads her email/phone/LinkedIn/AAPC ID from the
-CV into `config\candidate_private.yaml`, checks the CV against `config\candidate_profile.yaml`, restricts
+CV into `config\candidate_private.yaml`, takes her photo from the CV into `data\cv\photo.jpg` (shown at the
+top right of every tailored CV; use `-PhotoPath <file>` to use a different photo, or delete the file for no photo), checks the CV against `config\candidate_profile.yaml`, restricts
 `data\` and the private config files to her Windows account, and adds two desktop shortcuts.
 
 ## 3. Sign in to Indeed (once, and whenever Indeed signs her out)

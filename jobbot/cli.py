@@ -58,6 +58,18 @@ def cmd_init(a) -> int:
     DB().close()
     for c in created:
         print("created", c)
+    if a.photo:
+        ext = Path(a.photo).suffix.lower()
+        if ext not in (".jpg", ".jpeg", ".png"):
+            print("Photo must be a .jpg or .png file"); return 1
+        for old in paths().cv_dir.glob("photo.*"):
+            old.unlink()
+        shutil.copy(a.photo, paths().cv_dir / f"photo{ext}")
+        print("Photo saved; it will appear on every tailored CV.")
+    if a.cv and not a.photo and not list(paths().cv_dir.glob("photo.*")):
+        saved = extract_photo_from_cv(a.cv)
+        if saved:
+            print("Took her photo from the CV:", saved)
     if a.cv:
         dst = paths().cv_dir / "Anagha_P_CV.pdf"
         shutil.copy(a.cv, dst)
@@ -65,6 +77,23 @@ def cmd_init(a) -> int:
         return cmd_check_cv(argparse.Namespace(cv=str(dst), write_private=True))
     print("Next: fill config/candidate_private.yaml (or run: python -m jobbot init --cv path\\to\\Anagha_P_CV.pdf)")
     return 0
+
+
+def extract_photo_from_cv(cv_path: str) -> Path | None:
+    """Save the largest picture on the CV's first page as data/cv/photo.jpg."""
+    from pypdf import PdfReader
+    try:
+        images = PdfReader(cv_path).pages[0].images
+        best = max(images, key=lambda i: i.image.size[0] * i.image.size[1], default=None)
+    except Exception as e:
+        log.warning("Could not read a photo from the CV: %s", e)
+        return None
+    if best is None or min(best.image.size) < 100:
+        return None
+    out = paths().cv_dir / "photo.jpg"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    best.image.convert("RGB").save(out, quality=95)
+    return out
 
 
 def cmd_check_cv(a) -> int:
@@ -376,6 +405,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("-v", "--verbose", action="store_true")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("init", help="create local config, folders and database"); p.add_argument("--cv")
+    p.add_argument("--photo", help="her photo (.jpg/.png) to show on tailored CVs")
     p.set_defaults(fn=cmd_init)
     p = sub.add_parser("check-cv", help="compare the CV PDF with the profile"); p.add_argument("cv")
     p.add_argument("--write-private", action="store_true"); p.set_defaults(fn=cmd_check_cv)

@@ -51,3 +51,25 @@ def test_ai_text_rejected_falls_back_to_template(monkeypatch, sample_jobs):
     monkeypatch.setattr(anthropic, "Anthropic", Client)
     out = generate_application_documents(load_profile(), dict(sample_jobs[3], id=8), [], "medical_coding", use_ai=True)
     assert out["source"] == "template"
+
+
+def test_photo_from_cv_appears_on_tailored_cv(sample_jobs, tmp_path):
+    from pathlib import Path
+    from PIL import Image
+    from reportlab.lib.pagesizes import A4
+    from reportlab.pdfgen import canvas
+    from jobbot.cli import extract_photo_from_cv
+    src = tmp_path / "face.png"
+    Image.new("RGB", (300, 380), (200, 180, 160)).save(src)
+    cv = tmp_path / "cv.pdf"
+    c = canvas.Canvas(str(cv), pagesize=A4)
+    c.drawImage(str(src), 480, 720, 60, 76)
+    c.drawString(40, 800, "ANAGHA P")
+    c.save()
+    photo = extract_photo_from_cv(str(cv))
+    assert photo and Path(photo).exists()
+    out = generate_application_documents(load_profile(), dict(sample_jobs[3], id=9), [], "medical_coding", use_ai=False)
+    with pdfplumber.open(out["cv_pdf"]) as pdf:
+        assert pdf.pages[0].images
+    from docx import Document
+    assert Document(out["cv_docx"]).inline_shapes

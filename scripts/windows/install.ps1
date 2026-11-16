@@ -1,10 +1,11 @@
 <#
   One-time setup on Anagha's Windows PC.
   Run in PowerShell from the project folder:
-      powershell -ExecutionPolicy Bypass -File scripts\windows\install.ps1 -CvPath "C:\Users\<you>\Downloads\Anagha_P_CV.pdf"
+      powershell -ExecutionPolicy Bypass -File scripts\windows\install.ps1 -CvPath "C:\Users\<you>\Downloads\Anagha_P_CV.pdf" -PhotoPath "C:\Users\<you>\Downloads\photo.jpg"
 #>
 param(
-    [string]$CvPath = ""
+    [string]$CvPath = "",
+    [string]$PhotoPath = ""
 )
 $ErrorActionPreference = "Stop"
 $Root = (Resolve-Path "$PSScriptRoot\..\..").Path
@@ -43,7 +44,10 @@ if (-not $chrome) {
 }
 
 # 4. Local config, database, folders
-if ($CvPath) { & $vpy -m jobbot init --cv "$CvPath" } else { & $vpy -m jobbot init }
+$initArgs = @("-m", "jobbot", "init")
+if ($CvPath) { $initArgs += @("--cv", $CvPath) }
+if ($PhotoPath) { $initArgs += @("--photo", $PhotoPath) }
+& $vpy @initArgs
 if ($useChromium) {
     (Get-Content .env) -replace '^JOBBOT_BROWSER_CHANNEL=.*', 'JOBBOT_BROWSER_CHANNEL=chromium' | Set-Content .env
 }
