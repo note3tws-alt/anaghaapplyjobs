@@ -1,0 +1,118 @@
+# Verified facts from Anagha_P_CV.pdf (uploaded 2026-11-16). This is the ONLY source the
+# document generator and AI writer may use. Contact details live in config/candidate_private.yaml
+# (gitignored). Do not add anything that is not on her CV.
+
+name: Anagha P
+headline: AAPC Certified Professional Coder (CPC) | Medical Coding & UAE Revenue Cycle Management (RCM)
+location: Dubai, UAE
+nationality: Indian
+languages: [English, Malayalam, Hindi]
+visa_status_on_cv: Visit Visa
+
+summary: >-
+  AAPC Certified Professional Coder (CPC) with a score of 90% and practical exposure to UAE hospital
+  revenue cycle management at International Modern Hospital, Dubai. Experienced in insurance
+  pre-authorizations, claim preparation and submission using eClaimLink and Mediware. Completed a
+  270-hour medical coding internship with hands-on training in ICD-10-CM, CPT and HCPCS Level II coding,
+  medical record abstraction and clinical documentation review. Holds an MSc in Zoology, providing a
+  strong foundation in anatomy, physiology and medical terminology.
+
+experience:
+  - title: Insurance Coordinator Trainee – Revenue Cycle Management (RCM)
+    employer: International Modern Hospital
+    location: Dubai, UAE
+    start: Oct 2026
+    end: Present
+    bullets:
+      - Part of the hospital's UAE revenue cycle management (RCM) team, with hands-on exposure to UAE insurance workflows on live patient cases, from pre-authorization through to claim submission.
+      - Review clinical documentation to support pre-authorization requests and follow up with payers until approved.
+      - Prepare and submit insurance claims through eClaimLink, checking patient, policy and service details for accuracy.
+      - Built working familiarity with payer requirements and how documentation and coding (ICD-10-CM, CPT) support them.
+      - Use Mediware hospital software daily to work with the patient, insurance and billing records behind each case.
+
+certifications:
+  - name: AAPC Certified Professional Coder (CPC)
+    date: August 2026
+    detail: "Examination Score: 90%"
+
+training:
+  - title: Medical Coding Intern – Medical Coding Internship Program
+    organisation: Cigma Medical Coding Academy, Ernakulam, Kerala
+    duration: 270 hours
+    bullets:
+      - Completed a 270-hour, AAPC-aligned internship, coding real and simulated patient charts under supervision.
+      - Assigned ICD-10-CM diagnosis, CPT procedure and HCPCS Level II codes in line with official coding guidelines.
+      - Abstracted medical records and reviewed clinical documentation to identify billable diagnoses and procedures.
+      - Validated code selection against official ICD-10-CM, CPT and HCPCS Level II manuals and guideline references.
+      - Assessed on coding accuracy, guideline application and turnaround time across modules; achieved an A+ grade.
+  - title: Project Intern – Kannur Mangrove Conservation Project
+    organisation: Wildlife Trust of India
+    duration: Aug 2024 – Nov 2025
+    bullets:
+      - Handled field data collection, documentation and scientific reporting with a focus on accurate records.
+
+education:
+  - degree: MSc Zoology
+    detail: CGPA 8.6
+    institution: Mahatma Gandhi College, Thiruvananthapuram (Kerala University)
+    years: 2021 – 2023
+  - degree: BSc Zoology
+    detail: CGPA 8.6
+    institution: Payyanur College, Payyanur (Kannur University)
+    years: 2018 – 2021
+
+skills:
+  coding:
+    - ICD-10-CM diagnosis coding, conventions and guidelines
+    - CPT procedure coding and modifiers
+    - HCPCS Level II coding
+    - Evaluation and Management (E/M) coding
+    - Medical record abstraction
+    - Code selection and validation using official manuals
+    - Clinical documentation review
+    - Medical terminology, human anatomy & physiology
+  rcm_insurance:
+    - Insurance pre-authorization (approvals)
+    - Claims preparation and submission
+    - Insurance approval follow-up
+    - eClaimLink (Dubai e-claims platform)
+    - Mediware hospital software
+    - Accuracy and attention to detail in records
+    - MS Office (Word, Excel, PowerPoint)
+
+# Keywords used by the matcher. Each is something her CV supports.
+skill_keywords:
+  - icd-10-cm
+  - icd-10
+  - icd10
+  - cpt
+  - hcpcs
+  - e/m
+  - evaluation and management
+  - e&m
+  - modifiers
+  - medical terminology
+  - anatomy
+  - physiology
+  - abstraction
+  - clinical documentation
+  - documentation review
+  - pre-authorization
+  - preauthorization
+  - pre-approval
+  - prior authorization
+  - insurance approval
+  - claims submission
+  - claim submission
+  - claims preparation
+  - eclaimlink
+  - mediware
+  - ms office
+  - excel
+  - payer follow-up
+  - denial
+  - rcm
+  - revenue cycle
+
+# Real experience in months, as of the CV. Updated automatically from the start date.
+experience_start: 2026-10

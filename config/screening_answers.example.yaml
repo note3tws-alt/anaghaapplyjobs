@@ -1,0 +1,111 @@
+# Verified answers to Indeed screening questions. Copied to config/screening_answers.yaml (gitignored)
+# by `python -m jobbot init`. Anagha must check every answer marked verified: true.
+#
+# Rules:
+#  - A question is answered ONLY when it matches a rule here with verified: true.
+#  - Anything unmatched stops the application and lists the question in the dashboard.
+#  - Categories legal, salary, sensitive and terms ALWAYS stop, whatever is written here.
+#  - work_authorisation stops unless its rule is verified: true.
+
+answers:
+  - id: located_in_uae
+    match: ["currently (?:live|living|located|based) in (?:the )?(?:uae|dubai)", "are you (?:based|located) in (?:the )?(?:uae|dubai)"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV (Dubai, UAE)
+
+  - id: cpc_certified
+    match: ["(?:have|hold|possess)(?: an?)?(?: valid)? (?:aapc )?(?:cpc|certified professional coder)", "are you (?:aapc |cpc )?certified", "\\bcpc (?:certified|certification)\\??$"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV (AAPC CPC, August 2026)
+
+  - id: ccs_or_other_cert
+    match: ["\\bccs\\b", "\\bcca\\b", "\\bcic\\b", "\\bcoc\\b", "\\bcrc\\b"]
+    type: yes_no
+    answer: "No"
+    verified: true
+    source: CV lists only CPC
+
+  - id: english
+    match: ["speak english", "english (?:proficiency|fluency|language)", "fluent in english"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV languages
+
+  - id: malayalam_hindi
+    match: ["speak (?:malayalam|hindi)"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV languages
+
+  - id: nationality
+    match: ["^(?:what is your )?nationality\\??$"]
+    type: text
+    answer: "Indian"
+    verified: true
+    source: CV personal details
+
+  - id: arabic
+    match: ["(?:speak|read|write|fluent in|proficien\\w* in) arabic"]
+    type: yes_no
+    answer: "No"
+    verified: true
+    source: CV languages (Arabic not listed)
+
+  - id: bachelors_degree
+    match: ["(?:have|hold|completed) an? bachelor'?s degree\\??$", "(?:have|hold|completed) a (?:university|graduate) degree\\??$"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV (BSc and MSc Zoology)
+
+  - id: eclaimlink
+    match: ["eclaim ?link"]
+    type: yes_no
+    answer: "Yes"
+    verified: true
+    source: CV
+
+  - id: years_medical_coding
+    match: ["years? of (?:medical )?coding experience", "how many years.*coding"]
+    type: number
+    answer: "0"
+    verified: false            # she has a 270-hour internship but no paid coding job; she decides how to answer
+    source: CV
+
+  - id: years_rcm_insurance
+    match: ["years? of (?:rcm|revenue cycle|insurance|billing|claims) experience", "how many years.*(?:insurance|billing|claims|rcm)"]
+    type: number
+    answer: "0"
+    verified: false            # trainee since Oct 2026; she decides
+    source: CV
+
+  - id: work_authorisation
+    category: work_authorisation
+    match: ["authori[sz]ed to work", "legally (?:able|permitted) to work", "work permit", "visa", "sponsorship"]
+    type: text
+    answer: null               # CV says Visit Visa. Must be confirmed by Anagha before any answer is given.
+    verified: false
+
+  - id: notice_period
+    match: ["notice period", "when can you (?:start|join)", "available to (?:start|join)"]
+    type: text
+    answer: null
+    verified: false
+
+  - id: driving_licence
+    match: ["driving licen[cs]e", "driver'?s licen[cs]e"]
+    type: yes_no
+    answer: null
+    verified: false
+
+  - id: dha_license
+    match: ["\\bdha\\b", "\\bdoh\\b", "\\bhaad\\b", "\\bmoh\\b"]
+    type: yes_no
+    answer: null               # not on CV; she must confirm
+    verified: false

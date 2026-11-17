@@ -1,0 +1,24 @@
+# Secrets and personal data never go into git
+.env
+.env.*
+!.env.example
+*.env.txt
+config/settings.yaml
+config/candidate_private.yaml
+config/screening_answers.yaml
+data/
+reports/daily/*
+reports/weekly/*
+!reports/daily/.gitkeep
+!reports/weekly/.gitkeep
+*.pdf
+!tests/fixtures/**/*.pdf
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Frontend
+frontend/node_modules/
