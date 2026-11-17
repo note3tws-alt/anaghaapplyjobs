@@ -1,5 +1,8 @@
 # Secrets and personal data never go into git
 .env
+.env.*
+!.env.example
+*.env.txt
 config/settings.yaml
 config/candidate_private.yaml
 config/screening_answers.yaml
