@@ -20,7 +20,12 @@ schedule:
 # Only Dubai jobs (requested 2026-11-16). Add Sharjah, Ajman or Abu Dhabi here to widen the search.
 locations:
   - Dubai
-only_apply_in_search_locations: true   # a vacancy whose location is outside the list above is rejected
+only_apply_in_search_locations: true
+
+# Never apply to these employers (whole-word match on the company name). Requested 2026-11-17.
+excluded_companies:
+  - IMH
+  - International Modern Hospital   # a vacancy whose location is outside the list above is rejected
 
 # Searched in this order. Medical Coding comes first because it is the priority.
 job_titles:

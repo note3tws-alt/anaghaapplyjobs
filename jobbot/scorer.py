@@ -126,8 +126,22 @@ def _location(r: Requirements, allowed: list[str], strict: bool) -> tuple[int, s
     return 0, "Outside the UAE", "Outside the UAE"
 
 
+def _words(s: str) -> str:
+    return " " + re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip() + " "
+
+
+def excluded_company(company: str, excluded: list[str]) -> str | None:
+    """Return the matching entry if the employer is on the do-not-apply list (whole-word, case-insensitive)."""
+    name = _words(company)
+    for e in excluded:
+        if e and _words(e).strip() and _words(e) in name:
+            return e
+    return None
+
+
 def score(r: Requirements, *, candidate_years: float, allowed_locations: list[str],
-          strict_locations: bool = True, minimum_salary_aed: int = 0) -> Score:
+          strict_locations: bool = True, minimum_salary_aed: int = 0,
+          excluded_companies: list[str] | None = None) -> Score:
     c, c_why = _coding_relevance(r)
     p, p_why = _cpc_relevance(r)
     e, e_why = _experience(r, candidate_years)
@@ -153,7 +167,10 @@ def score(r: Requirements, *, candidate_years: float, allowed_locations: list[st
     total = max(0, min(100, total))
 
     reject = None
-    if loc_reject:
+    blocked = excluded_company(r.company, excluded_companies or [])
+    if blocked:
+        reject = f"Excluded employer ({blocked})"
+    elif loc_reject:
         reject = loc_reject
     elif c == 0:
         reject = "Not a medical coding, insurance or billing role"

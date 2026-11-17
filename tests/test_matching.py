@@ -67,3 +67,12 @@ def test_year_and_salary_parsers():
 def test_candidate_years_from_start_date():
     from datetime import date
     assert candidate_years_from_profile({"experience_start": "2026-10"}, date(2027, 10, 1)) == 1.0
+
+
+def test_excluded_company_rejected():
+    from jobbot.scorer import excluded_company
+    ex = ["IMH", "International Modern Hospital"]
+    assert excluded_company("IMH Hospital Dubai", ex) == "IMH"
+    assert excluded_company("International Modern Hospital LLC", ex)
+    assert excluded_company("Mediclinic", ex) is None
+    assert excluded_company("Simhealth", ex) is None

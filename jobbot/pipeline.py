@@ -77,6 +77,10 @@ def search_plan(settings: dict) -> list[tuple[str, str, str]]:
 
 
 # ---------------- scoring ----------------
+# Employers never to apply to. Overridden by `excluded_companies` in config/settings.yaml.
+DEFAULT_EXCLUDED_COMPANIES = ["IMH", "International Modern Hospital"]   # Hola, 2026-11-17
+
+
 def evaluate_job(db: DB, job_id: int, settings: dict, profile: dict, stats: RunStats | None = None) -> dict:
     job = db.get_job(job_id)
     description, removed = strip_injections(job.get("description") or "")
@@ -84,7 +88,8 @@ def evaluate_job(db: DB, job_id: int, settings: dict, profile: dict, stats: RunS
     sc = score(req, candidate_years=candidate_years_from_profile(profile),
                allowed_locations=settings.get("locations", []),
                strict_locations=settings.get("only_apply_in_search_locations", True),
-               minimum_salary_aed=int(settings.get("minimum_salary_aed") or 0))
+               minimum_salary_aed=int(settings.get("minimum_salary_aed") or 0),
+               excluded_companies=settings.get("excluded_companies", DEFAULT_EXCLUDED_COMPANIES))
     flags = list(req.flags)
     if not (job.get("description") or "").strip():
         flags.append("Job description could not be read; score uses the title only, so open the listing before approving")
