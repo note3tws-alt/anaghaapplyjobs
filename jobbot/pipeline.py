@@ -72,6 +72,9 @@ def search_plan(settings: dict) -> list[tuple[str, str, str]]:
     for cat in CATEGORY_ORDER + tuple(k for k in titles if k not in CATEGORY_ORDER):
         for t in titles.get(cat, []):
             for loc in settings.get("locations", []):
+                only = (settings.get("location_titles") or {}).get(loc)
+                if only is not None and t not in only:
+                    continue      # this place is searched for a shorter title list only
                 plan.append((cat, t, loc))
     return plan[: settings.get("max_searches_per_run", 24)]
 

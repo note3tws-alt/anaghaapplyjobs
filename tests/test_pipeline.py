@@ -75,3 +75,12 @@ def test_schedule_skips_sunday(settings):
 def test_import_jobs_without_browser(settings, sample_jobs):
     stats = run(settings, jobs=sample_jobs, use_ai=False, notify_enabled=False)
     assert stats.new_jobs == len(sample_jobs) and stats.prepared >= 3
+
+
+def test_location_titles_limits_searches():
+    from jobbot.pipeline import search_plan
+    s = {"job_titles": {"medical_coding": ["Medical Coder", "Junior Medical Coder"]},
+         "locations": ["Dubai", "Sharjah"], "location_titles": {"Sharjah": ["Medical Coder"]},
+         "max_searches_per_run": 50}
+    assert [(t, l) for _, t, l in search_plan(s)] == [
+        ("Medical Coder", "Dubai"), ("Medical Coder", "Sharjah"), ("Junior Medical Coder", "Dubai")]

@@ -20,7 +20,18 @@ schedule:
 # Only Dubai jobs (requested 2026-11-16). Add Sharjah, Ajman or Abu Dhabi here to widen the search.
 locations:
   - Dubai
+  - Sharjah
 only_apply_in_search_locations: true   # a vacancy whose location is outside the list above is rejected
+
+# Optional: search some places for only a few titles (fewer searches = fewer Indeed security checks).
+# A place not listed here is searched for every title.
+location_titles:
+  Sharjah:
+    - Medical Coder
+    - Insurance Coordinator
+    - Medical Insurance Coordinator
+    - Medical Billing Executive
+    - Claims Processing Executive
 
 # Never apply to these employers (whole-word match on the company name). Requested 2026-11-17.
 excluded_companies:
